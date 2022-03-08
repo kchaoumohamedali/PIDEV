@@ -6,6 +6,10 @@
 
 
     <br><br>
+
+    <input  id="myInput"  type="text" placeholder="search">
+
+
     <table class="table table-bordered" id="t"  width="100%" cellspacing="0">
         <thead>
         <tr>
@@ -13,17 +17,17 @@
             <th> </th>
             <th> </th>
             <th>id  </th>
-            <th>type_produit </th>
-            <th>prix_produit </th>
-            <th>date_expo</th>
-            <th>date_fin</th>
+            <th>type produit </th>
+            <th>prix produit </th>
+            <th>date exposition</th>
+            <th>date fin</th>
             <th> disponibilite</th>
-            <th>type_action</th>
-            <th>imgproduit</th>
+            <th>type action</th>
+            <th>image produit</th>
         </tr>
         </thead>
 
-        <tbody id="hi">
+        <tbody id="myTable">
 
 
             {% for i in tableproduits %}
@@ -41,7 +45,7 @@
                     <td>{{ i.id  }}</td>
 
                     <td>{{ i.TypeProduit }}</td>
-                    <td>{{ i.PrixProduit  }}</td>
+                    <td>{{ i.prix_produit  }}</td>
                     <td>{{(i.DateExpo).format('d/m/Y')}}</td>
 
                     <td>{{(i.DateFin).format('d/m/Y')}}</td>
@@ -60,7 +64,19 @@
 
     </table>
 
+    {{ knp_pagination_render(tableproduits) }}
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
 
 
 

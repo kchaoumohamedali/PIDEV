@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -35,8 +37,14 @@ class CommandeController extends AbstractController
     /**
      * @Route("/affichercommande",name="affichercommande")
      */
-    public function Affichercommande(CommandeRepository $repository){
-        $tablecommandes=$repository->findAll();
+    public function Affichercommande(Request $request,CommandeRepository $repository,PaginatorInterface $paginator){
+        $tablecommandes=$repository->listecommandeparDate();
+        $tablecommandes = $paginator->paginate(
+            $tablecommandes,
+            $request->query->getInt('page', 1),
+            4
+        );
+
         return $this->render('produit/afficherCommande.html.twig'
             ,['tablecommandes'=>$tablecommandes]);
 

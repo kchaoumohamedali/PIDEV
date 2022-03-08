@@ -3,7 +3,7 @@
 
 
 
-
+    <input  id="myInput"  type="text" placeholder="search">
     <table class="table table-bordered" id="t"  width="100%" cellspacing="0">
         <thead>
         <tr>
@@ -11,23 +11,41 @@
             <th>id  </th>
 <th>   prix</th>
             <th> date</th>
-            <th> valide</th>
 
         </tr>
 
-        <tbody id="hi">
+        <tbody id="myTable">
     {% for i in tablecommandes %}
         <tr>
             <td><a href="{{ path('suppcommande',{'id': i.id}) }}"><img src="https://img.icons8.com/color/48/000000/trash--v2.png"/></a></td>
 
             <td>{{ i.id  }}</td>
             <td>{{ i.prix  }}</td>
-            <td>{{ i.date  }}</td>
-            <td>{{ i.valide  }}</td>
+            <td>{{(i.date).format('d/m/Y')}}</td>
+
         </tr>
 
         {% endfor %}
 
 
         </tbody>
+
+    </table>
+    {{ knp_pagination_render(tablecommandes) }}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
+
+
+
 {% endblock %}

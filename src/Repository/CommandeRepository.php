@@ -19,6 +19,22 @@ class CommandeRepository extends ServiceEntityRepository
         parent::__construct($registry, Commande::class);
     }
 
+
+    /**
+     *
+     * Requête QueryBuilder
+     */
+    public function listecommandeparDate(){
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.date','DESC')
+            ->getQuery()
+            ->getResult()
+
+            ;
+
+    }
+
+
     // /**
     //  * @return Commande[] Returns an array of Commande objects
     //  */

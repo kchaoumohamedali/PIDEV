@@ -7,8 +7,12 @@ use App\Entity\Commande;
 use App\Entity\Produit;
 use App\Form\ProduitType;
 use App\Repository\CommandeRepository;
+use App\Repository\HotelRepository;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -23,8 +27,14 @@ class ProduitController extends AbstractController
     /**
          * @Route("/afficherproduit",name="afficherproduit")
      */
-    public function Affiche(ProduitRepository $repository){
-        $tableprduits=$repository->findAll();
+    public function Affiche(Request $request,ProduitRepository $repository,PaginatorInterface $paginator){
+        $tableprduits=$repository->listproduitparprix();
+        $tableprduits = $paginator->paginate(
+            $tableprduits,
+            $request->query->getInt('page', 1),
+            4
+        );
+
         return $this->render('produit/afficherProduits.html.twig'
             ,['tableproduits'=>$tableprduits]);
 
@@ -36,7 +46,7 @@ class ProduitController extends AbstractController
     /**
      * @Route("/ajoutproduit",name="ajoutproduit")
      */
-    public function ajouterProduit(EntityManagerInterface $em,Request $request ,ProduitRepository $UserRepository){
+    public function ajouterProduit(EntityManagerInterface $em,Request $request ,ProduitRepository $UserRepository,\Swift_Mailer $mailer ){
         $produit= new Produit();
         $form= $this->createForm(ProduitType::class,$produit);
         $form->add('Ajouter',SubmitType::class);
@@ -59,6 +69,26 @@ class ProduitController extends AbstractController
             }
             $em->persist($produit);
             $em->flush();
+            $mail=[];
+
+
+            $msg= $produit->getTypeProduit();
+            $prix_produit=$produit->getPrixProduit();
+
+            $message = (new \Swift_Message("Vous avez Ajouter un nouveau Produit  ".$msg))
+
+                ->setFrom('ecampix@gmail.com')
+                ->setTo('mohamedali.kchaou@esprit.tn')
+                //message avec vue twig
+                ->setBody(
+                    $this->renderView(
+                        'email/contact.html.twig'
+                    ),
+                    'text/html'
+                ) ;
+
+            $mailer->send($message);
+
 
 
            return $this->redirectToRoute("afficherproduit");
@@ -134,7 +164,7 @@ class ProduitController extends AbstractController
         $entityManager->persist($commande);
         $entityManager->flush();
 */
-        $tableprduits=$repository->findAll();
+        $tableprduits=$repository->listproduitparprix();
         return $this->render('produit/index.html.twig'
             ,['tableproduits'=>$tableprduits]);
 
@@ -143,15 +173,43 @@ class ProduitController extends AbstractController
     /**
      * @Route("/acheter/{id}",name="acheter")
      */
-    public function acheter (EntityManagerInterface $entityManager,ProduitRepository $repository, Request $request  )
+    public function acheter (EntityManagerInterface $entityManager,ProduitRepository $repository, Request $request,\Swift_Mailer $mailer   )
     {
         $produit = $repository->findOneBy(["id" => $request->get("id")]);
 
         $commande = new Commande();
         $commande->setProduit($produit);
         $commande->setDate(new \DateTimeImmutable());
+        $commande->setPrix($produit->getPrixProduit());
         $entityManager->persist($commande);
         $entityManager->flush();
+        $mail=[];
+
+
+        $msg= $produit->getTypeProduit();
+        $prixx=$produit->getPrixProduit();
+
+        $message = (new \Swift_Message("Vous avez passer une commande sur le produit ".$msg."de prix".$prixx))
+
+            ->setFrom('ecampix@gmail.com')
+            ->setTo('mohamedali.kchaou@esprit.tn')
+            //message avec vue twig
+            ->setBody(
+                $this->renderView(
+                    'email/contact.html.twig'
+                ),
+                'text/html'
+            ) ;
+
+        $mailer->send($message);
+
+
+
+
+
+
+
+
 
 
         return $this->redirectToRoute('afficherproduitClient');
@@ -163,15 +221,87 @@ class ProduitController extends AbstractController
 
 
 
+    /**
+     * @Route("/stat", name="stat")
+     */
+    public function statAction(ProduitRepository $repo)
+    {
+        $produits= $repo->findAll();
+        $produit= [];
+        $prixproduit= [];
 
 
 
 
+        foreach($produits as $produit ){
+            $produitnom[]=$produit->getTypeProduit();
+            $prixproduit[]= $produit->getPrixProduit();
+        }
+
+        return $this->render('produit/dashbord.html.twig',
+            [
+                'produitnom' => json_encode($produitnom),
+                'produitprix' => json_encode($prixproduit), 'base2' => 'base2',
+
+
+
+            ]);
+
+
+    }
+
+
+
+    /**
+     * @Route("/pdf/{id}", name="pdf" ,  methods={"GET"})
+     */
+    public function pdf($id,ProduitRepository $repository){
+
+        $produit=$repository->find($id);
+$pdfOptions = new Options();
+$pdfOptions->set('defaultFont', 'Arial');
+$dompdf = new Dompdf($pdfOptions);
+$html = $this->renderView('produit/pdf.html.twig', [
+'pdf' => $produit,
+
+]);
+$dompdf->loadHtml($html);
+
+    // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+$dompdf->setPaper('A4', 'portrait');
+
+    // Render the HTML as PDF
+$dompdf->render();
+    //  $dompdf->stream();
+    // Output the generated PDF to Browser (force download)
+$dompdf->stream($produit->getTypeProduit(), [
+"Attachment" => true
+]);
+
+    }
+
+    /**
+     * @Route("/produitt/{id}",name="detailproduit")
+
+     */
+
+    public function getById (ProduitRepository $repository, Request $request  )
+    {
+
+        $id = $request->get('id');
+
+        $detailproduit = $repository->findOneBy(['id' => $id]);
 
 
 
 
+        return $this->render("produit/detailproduit.html.twig",['detailproduit' => $detailproduit]) ;
 
+    }
 
 
 }
+
+
+
+

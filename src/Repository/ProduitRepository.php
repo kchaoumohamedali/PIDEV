@@ -19,6 +19,27 @@ class ProduitRepository extends ServiceEntityRepository
         parent::__construct($registry, Produit::class);
     }
 
+
+
+    /**
+     *
+     * Requête QueryBuilder
+     */
+    public function listproduitparprix(){
+        return $this->createQueryBuilder('c')
+                ->orderBy('c.prix_produit','ASC')
+            ->getQuery()
+            ->getResult()
+
+            ;
+
+    }
+
+
+
+
+
+
     // /**
     //  * @return Produit[] Returns an array of Produit objects
     //  */

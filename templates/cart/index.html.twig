@@ -107,74 +107,73 @@
 </div>
 <!-- Banner Ends Here -->
 
-<div class="latest-products">
+<section class="section main_section" >
     <div class="container">
-
-
         <div class="row">
+            <div class="col-12">
+                <div style="height: 500px">
+                    <section class="bg-light p-3">
+                        <h1>Votre panier</h1>
+                    </section>
 
-
-
-
-
-
-
-
-
-
-
-
-            {% for i in tableproduits %}
-            <div class="col-md-4">
-
-
-                <div class="product-item">
-                    <a href="{{ path("acheter", {id : i.id}) }}" class="btn btn-success"><i class="bi bi-cart-plus"></i> Acheter </a>
-                    <a href="{{ path("cart_add", {id : i.id}) }}" class="btn btn-success"><i class="bi bi-cart-plus"></i> Commander </a>
-
-                    <img  width="80" height="250" src="{{ asset('/back/images/')}}{{ i.imgproduit }}"    />
-
-                    <div class="down-content">
-                        <a href="#"><h4> {{ i.TypeProduit }} </h4></a>
-                        <h6>{{ i.prix_produit }} dt</h6>
-
-                        <ul class="stars">
-
-                            Date expo  {{(i.DateExpo).format('d/m/Y')}} <br>
-                            Date Fin{{(i.DateFin).format('d/m/Y')}}
-                        </ul>
-                        <span> {{ i.disponibilite }}</span>
-                        <a href="{{ path("detailproduit", {id : i.id}) }}" class="btn btn-success"><i class="bi bi-cart-plus"></i> Ouvrir </a>
-                    </div>
-
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Prix</th>
+                            <th>Quantité</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for element in dataPanier %}
+                            <tr>
+                                <td>{{ element.produit.id }}</td>
+                                <td class="text-end">{{ element.produit.prixProduit }} €</td>
+                                <td>{{ element.quantite }}</td>
+                                <td class="text-end">{{ element.quantite * element.produit.prixProduit }} €</td>
+                                <td>
+                                    <a href="{{path("cart_add", {id: element.produit.id})}}" class="btn btn-success">
+                                        <i class="bi bi-cart-plus"> Ajouter </i>
+                                    </a>
+                                    <a href="{{path("cart_remove", {id: element.produit.id})}}" class="btn btn-warning">
+                                        <i class="bi bi-cart-dash"> Supprimer </i>
+                                    </a>
+                                    <a href="{{path("cart_delete", {id: element.produit.id})}}" class="btn btn-danger">
+                                        <i class="bi bi-cart-x">Supprimer tous</i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Votre panier est vide</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="3">Total</td>
+                            <td class="text-end">{{ total }} €</td>
+                            <td>
+                                <a href="/afficherproduitClient" class="btn btn-success">
+                                    <i class="bi bi-cart-plus">Ajouter</i>
+                                </a>
+                                <a href="{{path("cart_save")}}" class="btn btn-warning" onclick="return confirm('Voulez-vous vraiment confirmer cette commande ?');">
+                                    <i class="bi bi-cart-dash"> Confirmer </i>
+                                </a>
+                                <a href="{{path("cart_delete_all")}}" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment Annuler cette commande ?');">
+                                    <i class="bi bi-cart-x">Annuler </i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
-
-
-
-                <a href="{{ path('pdf',{'id': i.id}) }}">   <img   width="30" src="https://cdn-icons-png.flaticon.com/512/337/337946.png">  </a>
-
-
-
-            {% endfor %}
-
-
-
-
-
-
-
-
-
-
-
-
+            </div>
         </div>
     </div>
-</div>
-
-
-
-
+</section>
 </div>
 </div>
 </div>
@@ -227,3 +226,17 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf82409f195d7bd6a0264b13d36965ab",
+    "content-hash": "d286fc9dfc2cfac3554a03e3d6cc02d3",
     "packages": [
         {
             "name": "captcha-com/captcha",
@@ -3052,6 +3052,7 @@
                     "type": "tidelift"
                 }
             ],
+            "abandoned": "symfony/mailer",
             "time": "2021-10-18T15:26:12+00:00"
         },
         {
