@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.ProduitFrontController">
+   <children>
+      <AnchorPane id="AnchorPane" prefHeight="646.0" prefWidth="970.0" style="-fx-background-color: #FFF0BC;" styleClass="mainFxmlClass">
+         <stylesheets>
+            <URL value="@../../../../../Smaher%20java/Fakher/Pidevjava/src/edu/esprit/gui/ajoutersalle.css" />
+         </stylesheets>
+         <children>
+            <Label layoutX="447.0" layoutY="31.0" text="Produits" textFill="#9c3832">
+               <font>
+                  <Font name="Arial Unicode MS" size="31.0" />
+               </font>
+            </Label>
+            <Pane layoutX="173.0" layoutY="99.0" prefHeight="387.0" prefWidth="574.0">
+               <children>
+                  <TableView fx:id="tableview" layoutX="7.0" layoutY="-5.0" prefHeight="397.0" prefWidth="638.0">
+                     <columns>
+                        <TableColumn fx:id="type_produit" prefWidth="115.20001220703125" text="type_produit" />
+                        <TableColumn fx:id="prix_produit" prefWidth="116.79998779296875" text="prix_produit" />
+                        <TableColumn fx:id="date_expo" prefWidth="81.5999755859375" text="date_expo" />
+                        <TableColumn fx:id="date_fin" prefWidth="83.20001220703125" text="date_fin" />
+                        <TableColumn fx:id="disponibilite" prefWidth="116.7999267578125" text="disponibilite" />
+                     </columns>
+                  </TableView>
+               </children>
+            </Pane>
+            <Button fx:id="Afficher" layoutX="424.0" layoutY="519.0" mnemonicParsing="false" onAction="#Afficher" prefHeight="26.0" prefWidth="101.0" style="-fx-background-color: #cc5500;" text="Afficher" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
+            <Label fx:id="imgpathttt" layoutX="533.0" layoutY="515.0" text="Label" visible="false" />
+            <Label fx:id="labelid" layoutX="761.0" layoutY="37.0" text="Label" visible="false" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
